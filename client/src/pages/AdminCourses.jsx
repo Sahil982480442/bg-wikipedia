@@ -1,13 +1,10 @@
-// AdminCourses.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BellIcon, BookOpenIcon, PlusIcon, EditIcon, Trash2Icon, SearchIcon } from "lucide-react";
 
-// Example ISKCON relevant image (Unsplash)
-// You can change this to any Krishna gif/bg/artwork you like
 const HERO_IMAGE = "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // beautiful river
-const DEFAULT_AVATAR = "https://avatars.githubusercontent.com/u/29354907?s=200&v=4"; // ISKCON logo
+const DEFAULT_AVATAR = "https://avatars.githubusercontent.com/u/29354907?s=200&v=4";
 
 function AdminCourses() {
   const [courses, setCourses] = useState([]);
@@ -113,15 +110,15 @@ function AdminCourses() {
           <div className="flex items-center gap-4">
             <img
               src={DEFAULT_AVATAR}
-              alt="ISKCON Logo"
+              alt="Sanjivani Logo"
               className="w-14 h-14 rounded-full shadow-md border-4 border-yellow-300 bg-white object-contain"
             />
             <div>
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-blue-900">
-                Course Management
+                Sanjivani Encyclopedia
               </h1>
               <div className="text-lg text-blue-700/80 font-medium">
-                Bring every lecture and wisdom to one place
+                Spreading Drops of Nectar
               </div>
             </div>
           </div>
