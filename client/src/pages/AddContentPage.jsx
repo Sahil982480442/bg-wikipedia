@@ -12,6 +12,7 @@ export default function AddContentPage() {
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/topic-content`, {
