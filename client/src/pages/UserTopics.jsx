@@ -8,6 +8,7 @@ const HERO_IMAGE =
 function UserTopics() {
   const { courseId } = useParams();
   const [topics, setTopics] = useState([]);
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,10 @@ function UserTopics() {
     navigate(`/user/courses/${courseId}/topics/${topicId}`);
   };
 
+  const filteredTopics = topics.filter((topic) =>
+    topic.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-50 bg-cover bg-fixed p-8 relative"
@@ -43,13 +48,25 @@ function UserTopics() {
           Topics
         </h1>
 
-        {topics.length === 0 ? (
+        {/* Search box */}
+        <div className="max-w-lg mx-auto mb-10 relative">
+          <input
+            type="search"
+            placeholder="Search topics..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full p-3 border border-blue-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+            aria-label="Search topics"
+          />
+        </div>
+
+        {filteredTopics.length === 0 ? (
           <p className="text-center text-blue-700 opacity-70 mt-20">
-            No topics available for this course.
+            No topics found.
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {topics.map((topic) => (
+            {filteredTopics.map((topic) => (
               <div
                 key={topic.id}
                 tabIndex={0}
@@ -73,6 +90,9 @@ function UserTopics() {
             ))}
           </div>
         )}
+        <div className="mt-12 text-center text-blue-800 text-sm font-medium">
+          If you have any queries, contact <span className="font-semibold">Sujay Nimai Das</span> 📞 77768 07563
+        </div>
       </div>
     </div>
   );

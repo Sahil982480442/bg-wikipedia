@@ -7,29 +7,65 @@ import {
   ArrowLeftIcon,
   FileTextIcon,
   Link2Icon,
+  PencilIcon,
+  Trash2Icon,
+  CheckIcon,
+  XIcon
 } from "lucide-react";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
+
 export default function TopicContentPage() {
   const { courseId, topicId } = useParams();
   const [topic, setTopic] = useState({});
   const [contents, setContents] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [editForm, setEditForm] = useState({ title: "", content: "" });
   const navigate = useNavigate();
 
+  const fetchData = async () => {
+    const t = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/api/topics/topic/${topicId}`
+    );
+    const c = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/approved/${topicId}`
+    );
+    setTopic(t.data);
+    setContents(c.data);
+  };
+
   useEffect(() => {
-    (async () => {
-      const t = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topics/topic/${topicId}`
-      );
-      const c = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/approved/${topicId}`
-      );
-      setTopic(t.data);
-      setContents(c.data);
-    })();
+    fetchData();
   }, [topicId]);
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this content?")) return;
+    await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/${id}`
+    );
+    fetchData();
+  };
+
+  const handleEditStart = (item) => {
+    setEditId(item.id);
+    setEditForm({ title: item.title, content: item.content || "" });
+  };
+
+  const handleEditCancel = () => {
+    setEditId(null);
+    setEditForm({ title: "", content: "" });
+  };
+
+  const handleEditSave = async () => {
+    await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/${editId}`,
+      editForm
+    );
+    setEditId(null);
+    fetchData();
+  };
 
   return (
     <div
@@ -40,12 +76,10 @@ export default function TopicContentPage() {
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay for soft glass effect */}
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
       <div className="relative z-10 max-w-3xl mx-auto py-10 px-4 sm:px-6 md:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-          {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-1 bg-white/60 hover:bg-yellow-100 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
@@ -54,7 +88,6 @@ export default function TopicContentPage() {
             Back
           </button>
 
-          {/* Title and Description */}
           <div className="flex-1 sm:ml-4">
             <h1 className="text-3xl font-extrabold text-blue-900 drop-shadow flex items-center gap-2">
               <BookOpenIcon className="text-yellow-600" size={33} />
@@ -63,7 +96,6 @@ export default function TopicContentPage() {
             <p className="text-blue-700 mt-1">{topic.description}</p>
           </div>
 
-          {/* Add Content Button */}
           <button
             onClick={() => navigate(`/submit/${courseId}/${topicId}`)}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-xl transition active:scale-95"
@@ -92,29 +124,86 @@ export default function TopicContentPage() {
               contents.map((item) => (
                 <article
                   key={item.id}
-                  className="relative rounded-xl border border-blue-100 bg-white/90 shadow hover:shadow-yellow-200 hover:border-yellow-300 hover:bg-yellow-50/60 transition group p-6"
+                  className="relative rounded-xl border border-blue-100 bg-white/90 shadow  transition group p-6"
                 >
-                  {/* Icon at top-right */}
-                  <div className="absolute top-3 right-3 opacity-30 group-hover:opacity-80 transition">
-                    <FileTextIcon className="text-blue-400" size={20} />
-                  </div>
-                  <h3 className="text-lg font-bold text-blue-900 flex items-center gap-2 group-hover:text-yellow-800 transition">
-                    {item.title}
-                    {item.link && (
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Open link"
-                        onClick={(e) => e.stopPropagation()}
-                        className="ml-2 group-hover:scale-105 transition"
-                      >
-                        <Link2Icon className="inline text-blue-600" size={17} />
-                      </a>
+                  {/* Edit/Delete buttons */}
+                  <div className="absolute top-3 right-3 flex gap-2 opacity-50 group-hover:opacity-90 transition">
+                    {editId === item.id ? (
+                      <>
+                        <button
+                          onClick={handleEditSave}
+                          className="text-green-600 hover:scale-110 transition"
+                        >
+                          <CheckIcon size={18} />
+                        </button>
+                        <button
+                          onClick={handleEditCancel}
+                          className="text-red-600 hover:scale-110 transition"
+                        >
+                          <XIcon size={18} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEditStart(item)}
+                          className="text-blue-500 hover:scale-110 transition"
+                        >
+                          <PencilIcon size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="text-red-500 hover:scale-110 transition"
+                        >
+                          <Trash2Icon size={18} />
+                        </button>
+                      </>
                     )}
-                  </h3>
+                  </div>
+
+                  {/* Title */}
+                  {editId === item.id ? (
+                    <input
+                      type="text"
+                      value={editForm.title}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, title: e.target.value })
+                      }
+                      className="w-full border border-blue-200 rounded p-2 mb-2"
+                    />
+                  ) : (
+                    <h3 className="text-lg font-bold text-blue-900 flex items-center gap-2 group-hover:text-yellow-800 transition">
+                      {item.title}
+                      {item.link && (
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open link"
+                          onClick={(e) => e.stopPropagation()}
+                          className="ml-2 group-hover:scale-105 transition"
+                        >
+                          <Link2Icon
+                            className="inline text-blue-600"
+                            size={17}
+                          />
+                        </a>
+                      )}
+                    </h3>
+                  )}
+
+                  {/* Content */}
                   <div className="mt-3 text-blue-800/90 whitespace-pre-wrap">
-                    {item.content ? (
+                    {editId === item.id ? (
+                      <textarea
+                        value={editForm.content}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, content: e.target.value })
+                        }
+                        className="w-full border border-blue-200 rounded p-2"
+                        rows={3}
+                      />
+                    ) : item.content ? (
                       <span>{item.content}</span>
                     ) : item.link ? (
                       <a

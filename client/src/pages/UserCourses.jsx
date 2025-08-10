@@ -77,6 +77,9 @@ function UserCourses() {
             ))}
           </div>
         )}
+        <div className="mt-12 text-center text-blue-800 text-sm font-medium">
+          If you have any queries, contact <span className="font-semibold">Sujay Nimai Das</span> 📞 77768 07563
+        </div>
       </div>
     </div>
   );
