@@ -64,12 +64,12 @@ export default function AdminPendingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue to-yellow-50 p-8  mx-auto relative">
+    <div className="min-h-screen bg-gradient-to-br  from-blue-100 via-blue to-yellow-50 p-8  mx-auto relative">
       
       <div className="absolute inset-0 bg-white/70 pointer-events-none z-0" />
       <div className="relative z-10">
         <h1 className="text-3xl font-extrabold text-blue-900 mb-8 text-center">
-          Pending Content Requests
+          Pending Requests
         </h1>
 
         {requests.length === 0 && (
@@ -102,7 +102,7 @@ export default function AdminPendingPage() {
               <div className="flex flex-col space-y-3 sm:space-y-4 sm:w-32">
                 <button
                   onClick={() => act(r.id, true)}
-                  className="rounded-xl bg-blue-600 text-white py-2 font-semibold shadow hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95"
+                  className="rounded-xl bg-green-600 text-white py-2 font-semibold shadow hover:bg-green-700 transition focus:outline-none focus:ring-4 focus:ring-green-300 active:scale-95"
                   aria-label={`Approve content request titled ${r.title}`}
                 >
                   Approve
