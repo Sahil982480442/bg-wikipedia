@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+import HERO_IMAGE from "../assets/Hero.avif";
 
 function Home() {
   const navigate = useNavigate();

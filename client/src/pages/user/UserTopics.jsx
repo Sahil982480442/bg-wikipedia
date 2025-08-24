@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import {
+  ArrowLeftIcon,
+  FolderKanbanIcon,
+} from "lucide-react";
+import HERO_IMAGE from "../../assets/Hero.avif";
 import axios from "axios";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function UserTopics() {
   const { courseId } = useParams();
@@ -44,9 +46,19 @@ function UserTopics() {
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-extrabold mb-8 text-blue-900 drop-shadow text-center">
+
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1 bg-white/90 hover:bg-yellow-200 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
+        >
+          <ArrowLeftIcon size={18} /> Back
+        </button>
+
+        <h1 className="flex justify-center items-center gap-2 text-3xl md:text-4xl font-extrabold mb-8 text-blue-900 drop-shadow text-center">
+          <FolderKanbanIcon className="text-yellow-600" size={32} />
           Topics
         </h1>
+
 
         {/* Search box */}
         <div className="max-w-lg mx-auto mb-10 relative">
@@ -55,7 +67,7 @@ function UserTopics() {
             placeholder="Search topics..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full p-3 border border-blue-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+            className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
             aria-label="Search topics"
           />
         </div>
@@ -75,10 +87,10 @@ function UserTopics() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleTopicClick(topic.id);
                 }}
-                className="cursor-pointer rounded-2xl bg-white p-6 shadow-md transition hover:shadow-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                className="cursor-pointer rounded-2xl bg-white p-6 shadow-md transition hover:shadow-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-300 group"
                 aria-label={`View content for topic ${topic.title}`}
               >
-                <h2 className="text-xl font-bold text-blue-900 mb-2">
+                <h2 className="text-xl font-bold text-blue-900 mb-2 group-hover:text-yellow-700 transition">
                   {topic.title}
                 </h2>
                 <p className="text-blue-700 text-sm line-clamp-4 min-h-[4.5rem]">

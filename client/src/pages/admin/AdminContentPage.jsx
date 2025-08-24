@@ -12,9 +12,7 @@ import {
   CheckIcon,
   XIcon
 } from "lucide-react";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+import HERO_IMAGE from "../../assets/Hero.avif";
 
 
 export default function TopicContentPage() {
@@ -69,7 +67,7 @@ export default function TopicContentPage() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-50 bg-cover bg-fixed relative"
+      className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-50 bg-cover bg-fixed relative p-8"
       style={{
         backgroundImage: `url('${HERO_IMAGE}')`,
         backgroundSize: "cover",
@@ -77,7 +75,7 @@ export default function TopicContentPage() {
       }}
     >
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
-      <div className="relative z-10 max-w-3xl mx-auto py-10 px-4 sm:px-6 md:px-8">
+      <div className="relative z-10  mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <button

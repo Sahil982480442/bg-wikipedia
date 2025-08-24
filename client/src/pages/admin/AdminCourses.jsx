@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import logo from "../../assets/image.png";
+import HERO_IMAGE from "../../assets/Hero.avif";
 import { useNavigate } from "react-router-dom";
 import { BellIcon, BookOpenIcon, PlusIcon, EditIcon, Trash2Icon, SearchIcon, XIcon } from "lucide-react";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-const DEFAULT_AVATAR = logo;
 
 function AdminCourses() {
   // State for the main page
@@ -128,7 +126,7 @@ function AdminCourses() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
              <div className="flex items-center gap-4">
                 <img
-                  src={DEFAULT_AVATAR}
+                  src={logo}
                   alt="Sanjivani Logo"
                   className="w-14 h-14 rounded-full shadow-md bg-white object-contain"
                 />
@@ -164,8 +162,8 @@ function AdminCourses() {
                 <label className="block mb-1 font-semibold text-blue-800">New Course Title</label>
                 <input
                   type="text"
-                  placeholder="e.g., Spiritual Teachings"
-                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring focus:ring-blue-200 transition"
+                  placeholder="e.g., Discover Yourself"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                 />
@@ -175,7 +173,7 @@ function AdminCourses() {
                 <input
                   type="text"
                   placeholder="A brief summary"
-                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring transition"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                 />
@@ -196,7 +194,7 @@ function AdminCourses() {
                 <input
                   type="text"
                   placeholder="Search courses..."
-                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow focus:outline-none focus:ring-2 transition"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow focus:outline-none focus:ring-1 transition"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />

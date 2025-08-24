@@ -1,10 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Copy, Check } from "lucide-react";
+import HERO_IMAGE from "../../assets/Hero.avif";
+import { Copy, Check, ArrowLeftIcon, PlusCircleIcon, BookOpenIcon, FileTextIcon } from "lucide-react";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 export default function TopicContentPage() {
   const { courseId, topicId } = useParams();
@@ -45,27 +44,40 @@ export default function TopicContentPage() {
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
-      <div className="relative z-10 max-w-4xl mx-auto">
+      <div className="relative z-10  mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold text-blue-900 drop-shadow">
+           <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1 bg-white/60 hover:bg-yellow-100 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
+          >
+            <ArrowLeftIcon size={18} />
+            Back
+          </button>
+
+
+          <div className="flex-1 sm:ml-4">
+            <h1 className="text-3xl font-extrabold text-blue-900 drop-shadow flex items-center gap-2">
+              <BookOpenIcon className="text-yellow-600" size={33} />
               {topic.title || "Loading..."}
             </h1>
             <p className="text-blue-700 mt-1">{topic.description}</p>
           </div>
+
           <button
             onClick={() => navigate(`/submit/${courseId}/${topicId}`)}
             className="mt-4 sm:mt-0 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-xl transition focus:outline-none active:scale-95"
           >
+            <PlusCircleIcon size={20} />
             Add Content
           </button>
         </div>
 
         {/* Approved Resources */}
         <section className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-2xl shadow-2xl p-6">
-          <h2 className="text-2xl font-bold mb-6 text-blue-800 drop-shadow">
-            Approved Resources
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-blue-800 drop-shadow">
+            <FileTextIcon className="text-yellow-600" />
+            Resources
           </h2>
           <div className="space-y-6 min-h-[100px]">
             {contents.length === 0 ? (

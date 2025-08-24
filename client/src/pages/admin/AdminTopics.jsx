@@ -1,6 +1,7 @@
 // AdminTopics.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import HERO_IMAGE from "../../assets/Hero.avif";
 import axios from "axios";
 import {
   BookOpenIcon,
@@ -13,8 +14,6 @@ import {
   XIcon,
 } from "lucide-react";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1129&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 function AdminTopics() {
   const { courseId } = useParams();
@@ -128,12 +127,14 @@ function AdminTopics() {
         {/* --- CORRECTED: Page width changed from max-w-6xl to max-w-7xl for consistency --- */}
         <div className="relative z-10 max-w-7xl mx-auto py-10 px-4 sm:px-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+            
             <button
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-1 bg-white/90 hover:bg-yellow-200 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
             >
-              <ArrowLeftIcon size={18} /> Back to Courses
+              <ArrowLeftIcon size={18} /> Back
             </button>
+
             <div className="flex flex-col items-center text-center md:items-start md:text-left flex-grow">
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-blue-900 flex items-center gap-3">
                 <FolderKanbanIcon className="text-yellow-600" size={32} />
@@ -159,7 +160,7 @@ function AdminTopics() {
                 <input
                   id="title" type="text" placeholder="e.g., The Nature of the Soul"
                   value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full p-3 border border-blue-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   required
                 />
               </div>
@@ -170,7 +171,7 @@ function AdminTopics() {
                 <input
                   id="description" type="text" placeholder="A brief summary of the topic"
                   value={newDesc} onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full p-3 border border-blue-200 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                 />
               </div>
               <div className="w-full md:w-auto mt-2 md:mt-0">
@@ -188,7 +189,7 @@ function AdminTopics() {
                 <input
                   type="text" placeholder="Search topics..." value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full p-3 border border-blue-200 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-300 focus:outline-none transition"
+                  className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   aria-label="Search topics"
                 />
                 <SearchIcon size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none" />
@@ -207,7 +208,7 @@ function AdminTopics() {
               <div
                 key={topic.id}
                 className="group relative p-7 bg-white/80 rounded-2xl border drop-shadow-md shadow-xl
-                transition duration-300 hover:scale-[1.03] hover:border-blue-400 hover:shadow-blue-300
+                transition duration-300 hover:border-blue-400 hover:shadow-blue-300
                 hover:bg-blue-50/80 border-blue-100 flex flex-col justify-between"
                 style={{ minHeight: 180 }}
               >
