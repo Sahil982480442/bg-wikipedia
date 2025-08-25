@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   ArrowLeftIcon,
   FolderKanbanIcon,
+  SearchIcon,
 } from "lucide-react";
 import HERO_IMAGE from "../../assets/Hero.avif";
 import axios from "axios";
@@ -11,6 +12,7 @@ function UserTopics() {
   const { courseId } = useParams();
   const [topics, setTopics] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,10 +21,18 @@ function UserTopics() {
   }, []);
 
   const fetchTopics = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topics/${courseId}`
-    );
-    setTopics(res.data);
+    try {
+      setLoading(true);
+      // await new Promise((resolve) => setTimeout(resolve, 6000));
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/topics/${courseId}`
+      );
+      setTopics(res.data);
+    } catch (error) {
+      console.error("Failed to fetch topics:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleTopicClick = (topicId) => {
@@ -46,7 +56,6 @@ function UserTopics() {
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
-
         <button
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-1 bg-white/90 hover:bg-yellow-200 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
@@ -59,7 +68,6 @@ function UserTopics() {
           Topics
         </h1>
 
-
         {/* Search box */}
         <div className="max-w-lg mx-auto mb-10 relative">
           <input
@@ -70,9 +78,18 @@ function UserTopics() {
             className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
             aria-label="Search topics"
           />
+          <SearchIcon
+            size={20}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none"
+          />
         </div>
 
-        {filteredTopics.length === 0 ? (
+        {/* Loader just below search */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : filteredTopics.length === 0 ? (
           <p className="text-center text-blue-700 opacity-70 mt-20">
             No topics found.
           </p>
@@ -102,8 +119,10 @@ function UserTopics() {
             ))}
           </div>
         )}
+
         <div className="mt-12 text-center text-blue-800 text-sm font-medium">
-          If you have any queries, contact <span className="font-semibold">Sujay Nimai Das</span> 📞 77768 07563
+          If you have any queries, contact{" "}
+          <span className="font-semibold">Sujay Nimai Das</span> 📞 77768 07563
         </div>
       </div>
     </div>

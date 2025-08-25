@@ -6,6 +6,7 @@ export default function AdminPendingPage() {
   const [requests, setRequests] = useState([]);
   const [coursesMap, setCoursesMap] = useState({});
   const [topicsMap, setTopicsMap] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const fetchCourses = async () => {
     const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/courses`);
@@ -18,7 +19,6 @@ export default function AdminPendingPage() {
 
   const fetchTopicsForCourses = async (courseIds) => {
     const map = {};
-    // Fetch topics for each course
     await Promise.all(
       courseIds.map(async (cid) => {
         try {
@@ -27,7 +27,7 @@ export default function AdminPendingPage() {
             map[topic.id] = topic.title;
           });
         } catch {
-          // Ignore errors or handle per your needs
+
         }
       })
     );
@@ -35,15 +35,21 @@ export default function AdminPendingPage() {
   };
 
   const fetchRequests = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/pending`
-    );
-    setRequests(res.data);
+    try {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/pending`
+      );
+      setRequests(res.data);
 
-    // Extract unique course IDs
-    const courseIds = [...new Set(res.data.map((r) => r.course_id))];
-    // Fetch topics for those courses
-    fetchTopicsForCourses(courseIds);
+      const courseIds = [...new Set(res.data.map((r) => r.course_id))];
+      fetchTopicsForCourses(courseIds);
+    } catch (err) {
+      console.error("Error fetching requests:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -74,20 +80,28 @@ export default function AdminPendingPage() {
       }}
     >
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
-      <div>
-        
-        <div className="absolute inset-0 bg-white/70 pointer-events-none z-0" />
-        <div className="relative z-10">
-          <h1 className="text-3xl font-extrabold text-blue-900 mb-8 text-center">
-            Pending Requests
-          </h1>
 
-          {requests.length === 0 && (
-            <p className="text-blue-700 text-center text-lg opacity-70">
-              No pending requests.
-            </p>
-          )}
+      <div className="relative z-10">
+        <h1 className="text-3xl font-extrabold text-blue-900 mb-8 text-center">
+          Pending Requests
+        </h1>
 
+        {/* Loader */}
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        {/* No pending requests */}
+        {!loading && requests.length === 0 && (
+          <p className="text-blue-700 text-center text-lg opacity-70">
+            No pending requests.
+          </p>
+        )}
+
+        {/* Requests list */}
+        {!loading && (
           <ul className="space-y-6">
             {requests.map((r) => (
               <li
@@ -128,7 +142,7 @@ export default function AdminPendingPage() {
               </li>
             ))}
           </ul>
-        </div>
+        )}
       </div>
     </div>
   );

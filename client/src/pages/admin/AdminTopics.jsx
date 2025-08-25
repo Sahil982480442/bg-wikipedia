@@ -14,7 +14,6 @@ import {
   XIcon,
 } from "lucide-react";
 
-
 function AdminTopics() {
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -28,35 +27,32 @@ function AdminTopics() {
   const [currentTopic, setCurrentTopic] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchTopics = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/topics/${courseId}`);
+      setLoading(true);
+      // await new Promise((resolve) => setTimeout(resolve, 6000));
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/topics/${courseId}`
+      );
       setTopics(res.data);
     } catch (error) {
       console.error("Failed to fetch topics:", error);
+    } finally {
+      setLoading(false);
     }
   };
-  
-  // const fetchCourseDetails = async () => {
-  //   try {
-  //     const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/courses/${courseId}`);
-  //     setCourseTitle(res.data.title);
-  //   } catch (error) {
-  //     console.error("Failed to fetch course details", error);
-  //   }
-  // };
 
   useEffect(() => {
     fetchTopics();
-    // fetchCourseDetails();
   }, [courseId]);
-
 
   const handleAddTopic = async (e) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
     try {
+      setLoading(true);
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/topics`, {
         courseId,
         title: newTitle,
@@ -67,6 +63,7 @@ function AdminTopics() {
       fetchTopics();
     } catch (error) {
       console.error("Failed to add topic:", error);
+      setLoading(false);
     }
   };
 
@@ -80,15 +77,20 @@ function AdminTopics() {
   const handleUpdateTopic = async () => {
     if (!currentTopic || !editTitle.trim()) return;
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/topics/${currentTopic.id}`, {
-        title: editTitle,
-        description: editDesc,
-      });
+      setLoading(true);
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/topics/${currentTopic.id}`,
+        {
+          title: editTitle,
+          description: editDesc,
+        }
+      );
       setIsEditModalOpen(false);
       setCurrentTopic(null);
       fetchTopics();
     } catch (error) {
       console.error("Failed to update topic:", error);
+      setLoading(false);
     }
   };
 
@@ -98,16 +100,18 @@ function AdminTopics() {
     );
     if (isConfirmed) {
       try {
+        setLoading(true);
         await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/topics`, {
           data: { ids: [topicId] },
         });
         fetchTopics();
       } catch (error) {
         console.error("Failed to delete topic:", error);
+        setLoading(false);
       }
     }
   };
-  
+
   const filteredTopics = topics.filter((t) =>
     t.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -124,10 +128,8 @@ function AdminTopics() {
       >
         <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-blue-200/70 z-0" />
 
-        {/* --- CORRECTED: Page width changed from max-w-6xl to max-w-7xl for consistency --- */}
         <div className="relative z-10 max-w-7xl mx-auto py-10 px-4 sm:px-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
-            
             <button
               onClick={() => navigate(-1)}
               className="inline-flex items-center gap-1 bg-white/90 hover:bg-yellow-200 text-blue-800 px-4 py-2 rounded-full shadow transition active:scale-95"
@@ -148,29 +150,42 @@ function AdminTopics() {
             </div>
           </div>
 
+          {/* Add Topic + Search Section */}
           <section className="bg-white/95 rounded-2xl border border-blue-100 shadow-lg p-7 mb-10">
             <form
               onSubmit={handleAddTopic}
               className="flex flex-col md:flex-row gap-4 md:items-end"
             >
               <div className="w-full md:w-2/5">
-                <label htmlFor="title" className="block mb-1 font-semibold text-blue-800">
+                <label
+                  htmlFor="title"
+                  className="block mb-1 font-semibold text-blue-800"
+                >
                   New Topic Title
                 </label>
                 <input
-                  id="title" type="text" placeholder="e.g., The Nature of the Soul"
-                  value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
+                  id="title"
+                  type="text"
+                  placeholder="e.g., The Nature of the Soul"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   required
                 />
               </div>
               <div className="w-full md:w-2/5">
-                <label htmlFor="description" className="block mb-1 font-semibold text-blue-800">
+                <label
+                  htmlFor="description"
+                  className="block mb-1 font-semibold text-blue-800"
+                >
                   Description
                 </label>
                 <input
-                  id="description" type="text" placeholder="A brief summary of the topic"
-                  value={newDesc} onChange={(e) => setNewDesc(e.target.value)}
+                  id="description"
+                  type="text"
+                  placeholder="A brief summary of the topic"
+                  value={newDesc}
+                  onChange={(e) => setNewDesc(e.target.value)}
                   className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                 />
               </div>
@@ -184,66 +199,86 @@ function AdminTopics() {
               </div>
             </form>
 
+            {/* Search bar */}
             <div className="my-7 flex justify-center">
               <div className="relative w-full md:w-3/5">
                 <input
-                  type="text" placeholder="Search topics..." value={search}
+                  type="text"
+                  placeholder="Search topics..."
+                  value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
                   aria-label="Search topics"
                 />
-                <SearchIcon size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none" />
+                <SearchIcon
+                  size={20}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none"
+                />
               </div>
             </div>
           </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {filteredTopics.length === 0 && (
-              <div className="col-span-full text-center text-blue-700 text-lg py-10 opacity-70">
-                No topics found. Add your first lecture or section!
-                <BookOpenIcon className="inline ml-2" />
-              </div>
-            )}
-            {filteredTopics.map((topic) => (
-              <div
-                key={topic.id}
-                className="group relative p-7 bg-white/80 rounded-2xl border drop-shadow-md shadow-xl
-                transition duration-300 hover:border-blue-400 hover:shadow-blue-300
-                hover:bg-blue-50/80 border-blue-100 flex flex-col justify-between"
-                style={{ minHeight: 180 }}
-              >
-                <div>
-                  <h2 className="font-extrabold text-2xl text-blue-900 mb-1 group-hover:text-yellow-700 transition">
-                    {topic.title}
-                  </h2>
-                  <p className="text-blue-700/90 mt-1 mb-4 line-clamp-3">
-                    {topic.description || <span className="text-gray-400">(No description)</span>}
-                  </p>
-                </div>
+          {/* Loader BELOW search bar section */}
+          {loading && (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
 
-                <div className="flex gap-2 items-center mt-auto pt-4">
-                  <button
-                    onClick={() => openEditModal(topic)}
-                    className="inline-flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow transition"
-                  >
-                    <EditIcon size={16} /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTopic(topic.id)}
-                    className="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow transition"
-                  >
-                    <Trash2Icon size={16} /> Delete
-                  </button>
-                   <button
-                    onClick={() => navigate(`/admin/courses/${courseId}/topics/${topic.id}`)}
-                    className="ml-auto text-xs uppercase text-yellow-800/80 font-bold tracking-wide flex items-center gap-1"
-                  >
-                    <BookOpenIcon size={16} /> Manage Content
-                  </button>
+          {/* Topics Grid */}
+          {!loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {filteredTopics.length === 0 && (
+                <div className="col-span-full text-center text-blue-700 text-lg py-10 opacity-70">
+                  No topics found. Add your first lecture or section!
+                  <BookOpenIcon className="inline ml-2" />
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+              {filteredTopics.map((topic) => (
+                <div
+                  key={topic.id}
+                  className="group relative p-7 bg-white/80 rounded-2xl border drop-shadow-md shadow-xl
+                    transition duration-300 hover:border-blue-400 hover:shadow-blue-300
+                    hover:bg-blue-50/80 border-blue-100 flex flex-col justify-between"
+                  style={{ minHeight: 180 }}
+                >
+                  <div>
+                    <h2 className="font-extrabold text-2xl text-blue-900 mb-1 group-hover:text-yellow-700 transition">
+                      {topic.title}
+                    </h2>
+                    <p className="text-blue-700/90 mt-1 mb-4 line-clamp-3">
+                      {topic.description || (
+                        <span className="text-gray-400">(No description)</span>
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 items-center mt-auto pt-4">
+                    <button
+                      onClick={() => openEditModal(topic)}
+                      className="inline-flex items-center gap-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow transition"
+                    >
+                      <EditIcon size={16} /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTopic(topic.id)}
+                      className="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm font-semibold shadow transition"
+                    >
+                      <Trash2Icon size={16} /> Delete
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(`/admin/courses/${courseId}/topics/${topic.id}`)
+                      }
+                      className="ml-auto text-xs uppercase text-yellow-800/80 font-bold tracking-wide flex items-center gap-1"
+                    >
+                      <BookOpenIcon size={16} /> Manage Content
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -252,27 +287,41 @@ function AdminTopics() {
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative transform transition-all animate-in fade-in-0 zoom-in-95">
             <h2 className="text-2xl font-bold text-blue-900 mb-6">Edit Topic</h2>
-            <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
               <XIcon size={24} />
             </button>
             <div className="space-y-4">
               <div>
-                <label className="block mb-1 font-semibold text-blue-800">Title</label>
+                <label className="block mb-1 font-semibold text-blue-800">
+                  Title
+                </label>
                 <input
-                  type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
                   className="w-full p-3 bg-gray-50 border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring focus:ring-blue-200 transition"
                 />
               </div>
               <div>
-                <label className="block mb-1 font-semibold text-blue-800">Description</label>
+                <label className="block mb-1 font-semibold text-blue-800">
+                  Description
+                </label>
                 <input
-                  type="text" value={editDesc} onChange={(e) => setEditDesc(e.target.value)}
+                  type="text"
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
                   className="w-full p-3 bg-gray-50 border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring focus:ring-blue-200 transition"
                 />
               </div>
             </div>
             <div className="flex justify-end gap-4 mt-8">
-              <button onClick={() => setIsEditModalOpen(false)} className="px-5 py-2 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition">
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-5 py-2 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+              >
                 Cancel
               </button>
               <button
