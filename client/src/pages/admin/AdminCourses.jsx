@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../utils/axios";
 import logo from "../../assets/image.png";
 import HERO_IMAGE from "../../assets/Hero.avif";
 import { useNavigate } from "react-router-dom";
@@ -41,8 +41,8 @@ function AdminCourses() {
     try {
       setLoading(true);
       // await new Promise((resolve) => setTimeout(resolve, 6000));
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/courses`
+      const res = await api.get(
+        `/api/courses`
       );
       setCourses(res.data);
     } catch (error) {
@@ -54,8 +54,8 @@ function AdminCourses() {
 
   const fetchPending = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/pending`
+      const res = await api.get(
+        `/api/topic-content/pending`
       );
       setPendingCount(res.data.length);
     } catch (error) {
@@ -67,7 +67,7 @@ function AdminCourses() {
   const handleAddCourse = async () => {
     if (!newTitle.trim()) return;
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/courses`, {
+      await api.post(`/api/courses`, {
         title: newTitle,
         description: newDesc,
       });
@@ -90,8 +90,8 @@ function AdminCourses() {
   const handleUpdateCourse = async () => {
     if (!currentCourse || !editTitle.trim()) return;
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/courses/${currentCourse.id}`,
+      await api.put(
+        `/api/courses/${currentCourse.id}`,
         {
           title: editTitle,
           description: editDesc,
@@ -112,7 +112,7 @@ function AdminCourses() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/courses`, {
+        await api.delete(`/api/courses`, {
           data: { ids: [id] },
         });
         fetchCourses();
@@ -157,25 +157,37 @@ function AdminCourses() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => navigate("/admin/pending")}
-              className="relative group"
-              aria-label="Pending Approvals"
-            >
-              <BellIcon
-                size={30}
-                className="text-yellow-600 drop-shadow group-hover:animate-ring"
-              />
-              {pendingCount > 0 && (
-                <span
-                  className="absolute -top-2 -right-2 w-7 h-7 rounded-full border-2 border-white
-                    bg-red-600 flex items-center justify-center text-white font-bold text-xs shadow-lg
-                    animate-bounce"
-                >
-                  {pendingCount}
-                </span>
-              )}
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/admin/pending")}
+                className="relative group"
+                aria-label="Pending Approvals"
+              >
+                <BellIcon
+                  size={30}
+                  className="text-yellow-600 drop-shadow group-hover:animate-ring"
+                />
+                {pendingCount > 0 && (
+                  <span
+                    className="absolute -top-2 -right-2 w-7 h-7 rounded-full border-2 border-white
+                      bg-red-600 flex items-center justify-center text-white font-bold text-xs shadow-lg
+                      animate-bounce"
+                  >
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  navigate('/admin/login');
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-red-300 active:scale-95"
+                aria-label="Logout"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Add Course Form */}

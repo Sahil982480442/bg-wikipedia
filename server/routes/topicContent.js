@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const adminAuth = require("../middleware/auth");
 
-// Get approved content for a topic
+// Get approved content for a topic (public)
 router.get("/approved/:topicId", async (req, res) => {
   const { topicId } = req.params;
   const result = await pool.query(
@@ -15,7 +16,7 @@ router.get("/approved/:topicId", async (req, res) => {
   res.json(result.rows);
 });
 
-// Submit new content (pending)
+// Submit new content (pending) - public for users
 router.post("/", async (req, res) => {
   const { courseId, topicId, name, mobile, title, content } = req.body;
   const result = await pool.query(
@@ -28,8 +29,8 @@ router.post("/", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// Get all pending requests (admin)
-router.get("/pending", async (req, res) => {
+// Get all pending requests (admin only)
+router.get("/pending", adminAuth, async (req, res) => {
   const result = await pool.query(
     `SELECT * FROM topic_content
      WHERE is_approved=false
@@ -38,8 +39,8 @@ router.get("/pending", async (req, res) => {
   res.json(result.rows);
 });
 
-// Approve
-router.put("/approve/:id", async (req, res) => {
+// Approve (admin only)
+router.put("/approve/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   const result = await pool.query(
     `UPDATE topic_content
@@ -51,15 +52,15 @@ router.put("/approve/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// Reject (delete)
-router.delete("/reject/:id", async (req, res) => {
+// Reject (delete) (admin only)
+router.delete("/reject/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   await pool.query(`DELETE FROM topic_content WHERE id=$1`, [id]);
   res.json({ msg: "Deleted" });
 });
 
-// Update title or content
-router.put("/:id", async (req, res) => {
+// Update title or content (admin only)
+router.put("/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
   const result = await pool.query(
@@ -72,16 +73,16 @@ router.put("/:id", async (req, res) => {
   res.json(result.rows[0]);
 });
 
-// Delete content
-router.delete("/:id", async (req, res) => {
+// Delete content (admin only)
+router.delete("/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   await pool.query(`DELETE FROM topic_content WHERE id=$1`, [id]);
   res.json({ msg: "Content deleted" });
 });
 
 
-// Admin adds approved content directly
-router.post("/admin", async (req, res) => {
+// Admin adds approved content directly (admin only)
+router.post("/admin", adminAuth, async (req, res) => {
   const { courseId, topicId, title, content } = req.body;
 
   const result = await pool.query(

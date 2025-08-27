@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../utils/axios";
 import {
   BookOpenIcon,
   PlusCircleIcon,
@@ -24,11 +24,11 @@ export default function TopicContentPage() {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    const t = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topics/topic/${topicId}`
+    const t = await api.get(
+      `/api/topics/topic/${topicId}`
     );
-    const c = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/approved/${topicId}`
+    const c = await api.get(
+      `/api/topic-content/approved/${topicId}`
     );
     setTopic(t.data);
     setContents(c.data);
@@ -40,8 +40,8 @@ export default function TopicContentPage() {
 
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this content?")) return;
-    await axios.delete(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/${id}`
+    await api.delete(
+      `/api/topic-content/${id}`
     );
     fetchData();
   };
@@ -57,8 +57,8 @@ export default function TopicContentPage() {
   };
 
   const handleEditSave = async () => {
-    await axios.put(
-      `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/${editId}`,
+    await api.put(
+      `/api/topic-content/${editId}`,
       editForm
     );
     setEditId(null);
@@ -94,22 +94,34 @@ export default function TopicContentPage() {
             <p className="text-blue-700 mt-1">{topic.description}</p>
           </div>
 
-          <button
-            onClick={() => navigate(`/submit/${courseId}/${topicId}`)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-xl transition active:scale-95"
-          >
-            <PlusCircleIcon size={20} />
-            Add Content
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(`/submit/${courseId}/${topicId}`)}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-xl transition active:scale-95"
+            >
+              <PlusCircleIcon size={20} />
+              Add Content
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                navigate('/admin/login');
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-red-300 active:scale-95"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Content Resources Section */}
-        <section className="backdrop-blur-lg bg-white/80 border border-blue-100 rounded-2xl shadow-2xl px-6 py-8">
+        <section className="backdrop-blur-lg bg-white/80 border border-blue-100 rounded-2xl shadow-2xl px-6 py-6">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-blue-800 drop-shadow">
             <FileTextIcon className="text-yellow-600" />
             Resources
           </h2>
-          <div className="space-y-7">
+          <div className="space-y-2">
             {contents.length === 0 ? (
               <div className="text-blue-700/70 px-3 py-6 flex flex-col items-center gap-2 text-center">
                 <span>No content yet.</span>

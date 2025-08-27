@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const adminAuth = require("../middleware/auth");
 
-//get single topic
+//get single topic (public)
 router.get("/topic/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -19,7 +20,7 @@ router.get("/topic/:id", async (req, res) => {
 });
 
 
-// Get all topics under a course
+// Get all topics under a course (public)
 router.get("/:courseId", async (req, res) => {
   const { courseId } = req.params;
   try {
@@ -34,8 +35,8 @@ router.get("/:courseId", async (req, res) => {
   }
 });
 
-// Add a new topic
-router.post("/", async (req, res) => {
+// Add a new topic (admin only)
+router.post("/", adminAuth, async (req, res) => {
   const { courseId, title, description } = req.body;
   try {
     const result = await pool.query(
@@ -51,7 +52,8 @@ router.post("/", async (req, res) => {
 
 
 
-router.put("/:id", async (req, res) => {
+// Update topic (admin only)
+router.put("/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   const { title, description } = req.body;
 
@@ -70,8 +72,8 @@ router.put("/:id", async (req, res) => {
 
 
 
-// Delete selected topics
-router.delete("/", async (req, res) => {
+// Delete selected topics (admin only)
+router.delete("/", adminAuth, async (req, res) => {
   const { ids } = req.body;
   try {
     await pool.query("DELETE FROM topics WHERE id = ANY($1::int[])", [ids]);

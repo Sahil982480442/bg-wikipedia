@@ -65,7 +65,7 @@ export default function AddContentPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-md bg-white rounded-2xl border border-blue-200 shadow-xl p-7 space-y-6"
+        className="relative z-10 w-full max-w-md bg-white rounded-2xl border border-blue-200 shadow-xl p-7 space-y-4"
         aria-label="Submit new content form"
       >
         <h2 className="text-2xl font-extrabold text-blue-900 text-center">
@@ -121,7 +121,7 @@ export default function AddContentPage() {
             placeholder="Details / Link / Video URL"
             value={form.content}
             onChange={handleChange}
-            rows={5}
+            rows={6}
             className="w-full border border-blue-200 rounded-md p-3 text-lg resize-y focus:outline-none focus:ring-1 transition"
           />
           {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content}</p>}

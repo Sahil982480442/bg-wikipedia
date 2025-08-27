@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../utils/axios";
 import HERO_IMAGE from "../../assets/Hero.avif";
 
 export default function AdminPendingPage() {
@@ -9,7 +9,7 @@ export default function AdminPendingPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchCourses = async () => {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/courses`);
+    const res = await api.get(`/api/courses`);
     const map = {};
     res.data.forEach((course) => {
       map[course.id] = course.title;
@@ -22,7 +22,7 @@ export default function AdminPendingPage() {
     await Promise.all(
       courseIds.map(async (cid) => {
         try {
-          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/topics/${cid}`);
+          const res = await api.get(`/api/topics/${cid}`);
           res.data.forEach((topic) => {
             map[topic.id] = topic.title;
           });
@@ -38,8 +38,8 @@ export default function AdminPendingPage() {
     try {
       setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 3000));
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/pending`
+      const res = await api.get(
+        `/api/topic-content/pending`
       );
       setRequests(res.data);
 
@@ -59,12 +59,12 @@ export default function AdminPendingPage() {
 
   const act = async (id, approve) => {
     if (approve) {
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/approve/${id}`
+      await api.put(
+        `/api/topic-content/approve/${id}`
       );
     } else {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topic-content/reject/${id}`
+      await api.delete(
+        `/api/topic-content/reject/${id}`
       );
     }
     fetchRequests();
@@ -82,9 +82,21 @@ export default function AdminPendingPage() {
       <div className="absolute inset-0 bg-white/60 backdrop-blur-md pointer-events-none z-0" />
 
       <div className="relative z-10">
-        <h1 className="text-3xl font-extrabold text-blue-900 mb-8 text-center">
-          Pending Requests
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-extrabold text-blue-900">
+            Pending Requests
+          </h1>
+          <button
+            onClick={() => {
+              localStorage.removeItem('token');
+              window.location.href = '/admin/login';
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-red-300 active:scale-95"
+            aria-label="Logout"
+          >
+            Logout
+          </button>
+        </div>
 
         {/* Loader */}
         {loading && (

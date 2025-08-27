@@ -2,8 +2,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const adminAuth = require("../middleware/auth");
 
-// Get all courses
+// Get all courses (public)
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM courses ORDER BY id");
@@ -14,8 +15,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create new course
-router.post("/", async (req, res) => {
+// Create new course (admin only)
+router.post("/", adminAuth, async (req, res) => {
   const { title, description } = req.body;
   try {
     const result = await pool.query(
@@ -29,8 +30,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ Edit/update course
-router.put("/:id", async (req, res) => {
+// ✅ Edit/update course (admin only)
+router.put("/:id", adminAuth, async (req, res) => {
   const { id } = req.params;
   const { title, description } = req.body;
   try {
@@ -45,8 +46,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete multiple courses
-router.delete("/", async (req, res) => {
+// Delete multiple courses (admin only)
+router.delete("/", adminAuth, async (req, res) => {
   const { ids } = req.body;
   try {
     await pool.query("DELETE FROM courses WHERE id = ANY($1::int[])", [ids]);

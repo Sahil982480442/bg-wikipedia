@@ -9,7 +9,7 @@ export default function TopicContentPage() {
   const { courseId, topicId } = useParams();
   const [topic, setTopic] = useState({});
   const [contents, setContents] = useState([]);
-  const [copiedId, setCopiedId] = useState(null); // Track copied card
+  const [copiedId, setCopiedId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,12 +74,12 @@ export default function TopicContentPage() {
         </div>
 
         {/* Approved Resources */}
-        <section className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-2xl shadow-2xl p-6">
+        <section className="bg-white/80 backdrop-blur-lg border border-blue-100 rounded-2xl shadow-2xl p-6">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-blue-800 drop-shadow">
             <FileTextIcon className="text-yellow-600" />
             Resources
           </h2>
-          <div className="space-y-6 min-h-[100px]">
+          <div className="space-y-2 min-h-[100px]">
             {contents.length === 0 ? (
               <p className="text-blue-700/80 text-center text-lg opacity-70">
                 No approved content yet.
@@ -96,7 +96,7 @@ export default function TopicContentPage() {
                       handleCopy(item.id, item.title, item.content)
                     }
                     className="absolute top-3 right-3 p-1 rounded-full bg-blue-100 hover:bg-blue-200 transition"
-                    title="Copy to clipboard"
+                    title="Copy"
                   >
                     {copiedId === item.id ? (
                       <Check size={18} className="text-green-600" />
@@ -105,10 +105,10 @@ export default function TopicContentPage() {
                     )}
                   </button>
 
-                  <h3 className="text-xl font-semibold text-blue-900">
+                  <h3 className="text-lg font-bold text-blue-900 flex items-center gap-2 group-hover:text-yellow-800 transition">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-blue-800 whitespace-pre-wrap">
+                  <p className="mt-3 text-blue-800 whitespace-pre-wrap">
                     {item.content}
                   </p>
                 </article>

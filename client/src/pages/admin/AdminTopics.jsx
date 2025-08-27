@@ -1,8 +1,7 @@
-// AdminTopics.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HERO_IMAGE from "../../assets/Hero.avif";
-import axios from "axios";
+import api from "../../utils/axios";
 import {
   BookOpenIcon,
   PlusIcon,
@@ -33,8 +32,8 @@ function AdminTopics() {
     try {
       setLoading(true);
       // await new Promise((resolve) => setTimeout(resolve, 6000));
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topics/${courseId}`
+      const res = await api.get(
+        `/api/topics/${courseId}`
       );
       setTopics(res.data);
     } catch (error) {
@@ -53,7 +52,7 @@ function AdminTopics() {
     if (!newTitle.trim()) return;
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/topics`, {
+      await api.post(`/api/topics`, {
         courseId,
         title: newTitle,
         description: newDesc,
@@ -78,8 +77,8 @@ function AdminTopics() {
     if (!currentTopic || !editTitle.trim()) return;
     try {
       setLoading(true);
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/api/topics/${currentTopic.id}`,
+      await api.put(
+        `/api/topics/${currentTopic.id}`,
         {
           title: editTitle,
           description: editDesc,
@@ -101,7 +100,7 @@ function AdminTopics() {
     if (isConfirmed) {
       try {
         setLoading(true);
-        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/topics`, {
+        await api.delete(`/api/topics`, {
           data: { ids: [topicId] },
         });
         fetchTopics();
@@ -148,6 +147,17 @@ function AdminTopics() {
                 </span>
               )}
             </div>
+
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                navigate('/admin/login');
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition focus:outline-none focus:ring-2 focus:ring-red-300 active:scale-95"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
           </div>
 
           {/* Add Topic + Search Section */}
@@ -183,7 +193,7 @@ function AdminTopics() {
                 <input
                   id="description"
                   type="text"
-                  placeholder="A brief summary of the topic"
+                  placeholder="A brief summary"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   className="w-full p-3 bg-white border border-blue-100 rounded-lg shadow-inner focus:outline-none focus:ring-1 transition"
@@ -201,7 +211,7 @@ function AdminTopics() {
 
             {/* Search bar */}
             <div className="my-7 flex justify-center">
-              <div className="relative w-full md:w-3/5">
+              <div className="relative w-full md:w-2/4">
                 <input
                   type="text"
                   placeholder="Search topics..."

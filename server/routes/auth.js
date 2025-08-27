@@ -34,4 +34,9 @@ router.post("/admin/login", async (req, res) => {
   }
 });
 
+// Admin Logout Route
+router.post("/admin/logout", (req, res) => {
+  res.json({ msg: "Logged out successfully" });
+});
+
 module.exports = router;
