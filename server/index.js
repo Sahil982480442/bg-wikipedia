@@ -8,10 +8,12 @@ app.use(
   cors({
     origin: ["https://sanjivani-encyclopedia.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-auth-token"], 
     credentials: true,
   })
 );
+
+app.options("*", cors());
 
 app.use(express.json());
 
